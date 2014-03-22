@@ -1,0 +1,42 @@
+
+
+what is "boxing" of types?
+
+for( int i = 0; i < arr.length; ++i)
+vs
+int l = arr.length;
+for( int i = 0; i < l; ++i )
+
+test in unity: (branch prediction)
+array sorted vs unsorted en dan processen
+1 versie met if-test in 1 functie (item per item: typische OO opzet)
+1 versie met if test in 1 functie (alle items in 1 grote loop : DOD opzet)
+1 versie met 2 functies per type (met 1x zoeken naar juiste index-switch na sort)
+1 versie met 2 functies per type (met fixed index / aparte arrays)
+
+
+float branch vs bool branch
+
+boolArray[x] = (float > float)      if( boolArray[x] )
+vs
+if( float > float )
+
+
+class var zetten in loop vs temp var zetten en pas nadien class var zetten
+
+loop unrolling
+
+method chaining parameter object vs hashtable 
+ - opbouw
+ - loop + gebruik variabelen in loop
+ 
+ 
+ tests 10.000x laten runnen en resultaten uitmiddelen
+ 
+ Singleton.use in loop
+ vs
+ Manager m = Singleton.use
+ loop uses m instead
+ 
+ struct vs class
+-> verder testen!

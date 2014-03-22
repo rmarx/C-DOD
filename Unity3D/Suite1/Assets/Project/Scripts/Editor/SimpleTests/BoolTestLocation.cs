@@ -4,59 +4,56 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using NUnit.Framework;
 
-/*
- * 
- * perf test:
-- if( !bool ) function(){…} (if-test in caller) (this one should be much faster, since no context-switch)
-vs
-- function(){ if(!bool) return; … } (if-test in callee)
- */
+
 using System; 
 
 namespace SimpleTests
 {
-	[TestFixture]
-	public class BoolTestLocation : MonoBehaviour 
-	{
-		public bool val = false;
+	/*
+		Test whether it's faster to but a bool-test before calling a function,
+		or directly inside of the function and return; if the test fails.
 
-		[Test]
-		public void Expectation()
+        Expectation: outside the function is faster, as it prevents the context switch
+        Test results: outside is 2x faster than inside (outside = 35, inside = 70)
+ 	*/
+	[TestFixture]
+	public class BoolTestLocation : LugusTestBase
+	{
+		public override void ExpectationAverageImplementation()
+		{
+			return;
+		}
+
+		public override void SingleRun(out double lowestNumber, out double highestNumber)
 		{
 			int count = 10000000;
-			System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
-			stopwatch.Start();
-
-
+			
+			LugusStopwatch.Start();
+			
 			BoolLocationOutside(count);
 			
-			stopwatch.Stop();
-			double outsideS = stopwatch.Elapsed.Milliseconds;
-
+			lowestNumber = LugusStopwatch.Stop();
 			
-			stopwatch.Start();
-
+			
+			LugusStopwatch.Start();
+			
 			BoolLocationInside(count);
 			
-			stopwatch.Stop();
-			double insideS = stopwatch.Elapsed.Milliseconds;
-
-			Console.WriteLine( "TESTING!" );
-			if( insideS > outsideS )
-				Assert.Inconclusive ( " " + insideS + " > " + outsideS );
-			else
-				Assert.Fail(  " " + insideS + " < " + outsideS );
+			highestNumber = LugusStopwatch.Stop();
 		}
+
 
 		public void EmptyFunction()
 		{
 
 		}
+		
+		public bool val = false;
 
 		public void BoolFunction()
 		{
 			if( !val )
-				return;
+				return; 
 		}
 
 
@@ -79,37 +76,6 @@ namespace SimpleTests
 			{
 				BoolFunction();
 			}
-		}
-
-
-		public void SetupLocal()
-		{
-			// assign variables that have to do with this class only
-			//System.Diagnostics.Stopwatch stopwatch = new Stopwatch();
-			//stopwatch.Start();
-
-			//stopwatch.Stop();
-			//stopwatch.Elapsed.Seconds;
-		}
-		
-		public void SetupGlobal()
-		{
-			// lookup references to objects / scripts outside of this script
-		}
-		
-		protected void Awake()
-		{
-			SetupLocal();
-		}
-
-		protected void Start () 
-		{
-			SetupGlobal();
-		}
-		
-		protected void Update () 
-		{
-		
 		}
 	}
 }
